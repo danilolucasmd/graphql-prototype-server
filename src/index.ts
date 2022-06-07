@@ -9,14 +9,14 @@ admin.initializeApp({
 
 const typeDefs = gql`
   type User {
-    id: Int!
+    id: String!
     name: String!
     bio: String!
   }
 
   type Query {
     users: [User]
-    user(id: Int!): User
+    user(id: String!): User
   }
 `;
 
@@ -26,6 +26,11 @@ const resolvers = {
       const users = await admin.firestore().collection('users').get();
 
       return users.docs.map(user => user.data());
+    },
+    async user(_, args) {
+      const user = await admin.firestore().doc(`users/${args.id}`).get();
+
+      return user.data();
     }
   },
 };
